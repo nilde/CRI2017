@@ -70,7 +70,6 @@ class StructureCreator:
 				each_cross[:]=[]
 				for i in diff_pos_word:
 					if i in word and indice_1 != indice_2:
-						print i
 						each_cross.extend(([self.orient_words_list[indice_1],self.orient_words_list[indice_2],i[0],i[1]]))
 						self.cross.append(each_cross[:])
 						each_cross[:]=[]
@@ -85,7 +84,7 @@ class StructureCreator:
 					self.cross.pop(self.cross.index(comb_2))
 
 	def generate_index_cross(self):
-		#REVISADA
+		#REVISADA / FUNCIONA (MIRAR QUE NO HAGA COSAS RARAS)
 		#Genera los indices de cruce para simplificar el calculo posterior del backtracking
 		#Formato de each_cross [palabra_1,palabra_2,pos_x,pos_y]
 		#Output: [[palabra_1,palabra_2,index_pal_1,index_pal_2],[palabra_1,palabra_3,indice_pal_1,indice_pal_2]]
@@ -94,18 +93,32 @@ class StructureCreator:
 			#Auxiliar es la estructura final de los cruces
 			auxiliar[:]=[]
 			auxiliar.extend((each_cross[0],each_cross[1]))#Ponemos las palabras igual
+			if len(each_cross[0]) == 2:
+				letra_1 = each_cross[0][1]
+				numero_1 = int(each_cross[0][0])
+			else:
+				letra_1 =each_cross[2]
+				numero_1 =int(each_cross[0][0])*10+int(each_cross[0][1])
+
+			if len(each_cross[1]) == 2:
+				letra_2 = each_cross[1][1]
+				numero_2= int(each_cross[1][0])
+			else:
+				letra_2=each_cross[1][2]
+				numero_2=int(each_cross[1][0])*10+int(each_cross[1][1])
 
 			#Recuperamos la posicion que ocupan respecto a los vectores y extraemos la posiciones ocupadas por esa palabra
 			indice_lista_ocupadas_1=self.orient_words_list.index(each_cross[0])
 			indice_lista_ocupadas_2=self.orient_words_list.index(each_cross[1])
+
 			pos_ocupadas_1=self.occupied_positions[indice_lista_ocupadas_1]
 			pos_ocupadas_2=self.occupied_positions[indice_lista_ocupadas_2]
 
 			#Por ultimo alargamos la longitud de la lista auxiliar con las indices de las posiciones que ocupan 
-			auxiliar.extend((pos_ocupadas_1.index([each_cross[3],each_cross[4]])),pos_ocupadas_2.index([each_cross[3],each_cross[4]]))#Buscamos a que indice de la palabra corresponde
+			auxiliar.extend((pos_ocupadas_1.index(each_cross[2:]),pos_ocupadas_2.index(each_cross[2:])))#Buscamos a que indice de la palabra corresponde
 			
 			#Anadimos la estructura intermedia a la final
-			self.index_cross.append(auxiliar)
+			self.index_cross.append(auxiliar[:])
 
 
 
@@ -118,7 +131,7 @@ class StructureCreator:
 				if(element > '0') and (element !='#'):
 					self.pos_init_words.append([int(num_row),int(num_col)])
 
-		self.domain_pointers=[0]*len(self.pos_init_words)
+		
 
 
 
@@ -231,18 +244,22 @@ class StructureCreator:
 					counter+=1
 				self.longitudes.append(counter)
 			if counter > self.maxima_longitud:
-					maxima_longitud=counter
+					self.maxima_longitud=counter
 
 
 	def generatePairs(self):
 		#
 		#Genera relaciones de palabras que comparten la misma longitud[[],[],[3,4]] donde la pos indica la longitud 
 		##Ouput:
+		print self.longitudes
+		self.domain_pointers=self.longitudes[:]
 		for longitud in range(self.maxima_longitud+1):
 			self.palabras_juntas.append([self.orient_words_list[i] for i, x in enumerate(self.longitudes) if x == longitud])
-		for indice_palabras,palabras in enumerate(palabras_juntas):
-			if len(palabras) > 0:
-				for indice_pointer,x in self.orient_words_list:
+
+		#Hasta aqui va perf
+		#repasar los pointers
+		for indice_palabras,palabras in enumerate(self.palabras_juntas):
+				for indice_pointer,x in enumerate(self.orient_words_list):
 					if x in palabras:
 						self.domain_pointers.insert(indice_pointer,indice_palabras)
 
