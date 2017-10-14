@@ -248,7 +248,7 @@ class StructureCreator:
 
 
 	def generatePairs(self):
-		#
+		#REVISADA / FUNCIONA
 		#Genera relaciones de palabras que comparten la misma longitud[[],[],[3,4]] donde la pos indica la longitud 
 		##Ouput:
 		print self.longitudes
@@ -259,9 +259,8 @@ class StructureCreator:
 		#Hasta aqui va perf
 		#repasar los pointers
 		for indice_palabras,palabras in enumerate(self.palabras_juntas):
-				for indice_pointer,x in enumerate(self.orient_words_list):
-					if x in palabras:
-						self.domain_pointers.insert(indice_pointer,indice_palabras)
+			for each in palabras:
+				self.domain_pointers[self.orient_words_list.index(each)]=indice_palabras
 
 
 
@@ -269,17 +268,29 @@ class StructureCreator:
 		#REVISADA / FUNCIONA
 		#Funcion que sirve para comprobar el correcto funcionamiento del sistema generador de estructuras.
 		#Output: Muestra por pantalla todas las estructuras importantes genradas
-		print "Casillas: " + str(self.squares)
-		print "Palabras separadas (indices): " + str(self.sep_words_dict)
+		print "---------ESTRUCTURAS GENERADAS PARA RESOLVER EL BACKTRACKING----------"
+		print "======================================================================"
+		print "Casillas: " + printstr(self.squares)
+		print "======================================================================"
 		print "Posiciones ocupadas por las palabras: " + str(self.occupied_positions)
+		print "======================================================================"
 		print "Posiciones iniciales ocupadas: " + str(self.pos_init_words)
+		print "======================================================================"
 		print "Longitudes de las palabras: " + str(self.longitudes)
+		print "======================================================================"
 		print "Orientacion de las palabras: " + str(self.orient_words_list)
+		print "======================================================================"
 		print "Cruces: "  + str(self.cross)
+		print "======================================================================"
 		print "Indices de cruces: " + str(self.index_cross)
+		print "======================================================================"
 		print "Palabra de maxima longitud: " + str(self.maxima_longitud)
+		print "======================================================================"
 		print "Lista de palabras que comparten longitudes: " + str(self.palabras_juntas)
+		print "======================================================================"
 		print "Lista de punteros a la estructura de las palabras compartidas: " + str(self.domain_pointers)
+		print "======================================================================"
+		print "======================================================================"
 		return ''
 
 
