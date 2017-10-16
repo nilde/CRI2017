@@ -8,10 +8,12 @@ def main():
 	reader.wordOrientation()
 	reader.lookWidths()
 	reader.OcuppiedPositionsGenerator()
-	reader.generateSeparatedList()
+	reader.generate_index_cross()
+	reader.generatePairs()
 	print reader
-	solver=backtracking.Backtracking(reader.cross,reader.sep_words_dict,reader.big_dictionary_list,reader.orientword,"diccionari_CB.txt")#Revisar intensamente esto
-	print solver
+	#self,R,lvna,file_dict,longitudes
+	solver=backtracking.Backtracking(reader.index_cross,reader.orient_words_list,"diccionari_CB.txt",reader.longitudes,reader.domain_pointers,reader.palabras_juntas)#Revisar intensamente esto
+	#print solver
 
 if __name__ == "__main__":
     main()

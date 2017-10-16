@@ -270,7 +270,7 @@ class StructureCreator:
 		#Output: Muestra por pantalla todas las estructuras importantes genradas
 		print "---------ESTRUCTURAS GENERADAS PARA RESOLVER EL BACKTRACKING----------"
 		print "======================================================================"
-		print "Casillas: " + printstr(self.squares)
+		print "Casillas: " + str(self.squares)
 		print "======================================================================"
 		print "Posiciones ocupadas por las palabras: " + str(self.occupied_positions)
 		print "======================================================================"
