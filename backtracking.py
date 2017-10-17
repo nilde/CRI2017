@@ -3,7 +3,6 @@ import timeit
 
 class Backtracking:
 	def __init__(self,R,file_dict,orient_word_list,longitudes):
-		#REVISADA / FUNCIONA 
 		#Constructor de la clase Backtracking inicializa las estructuras auxiliares necesarias
 
 		
@@ -27,7 +26,6 @@ class Backtracking:
 
 
 	def generateCorrectDict(self):
-		# REVISADA / FUNCIONA
 		#Genera el diccionario de las palabras eliminando los caracteres inecesarios(en MAC nose si en otra plataforma dara error)
 		for word in self.dictionary:
 			self.big_dictionary_list.append(word.translate(None, '\n\r'))
@@ -44,12 +42,13 @@ class Backtracking:
 		for index,i in enumerate(self.D):
 			self.D[index]=i[1:]
 		aux_clave={}
+		#conversion a diccionario
 		for indice,domain in enumerate(self.D):
 			aux_clave[self.orient_word_list[indice]]=domain
 		self.D=dict(aux_clave)
 
 	def generate_cruces_dict(self):
-		#Genera las posiciones de cruce entre todas las palabras
+		#Genera las posiciones de cruce entre todas las palabras con la estrcutura adecuada [['1H','1V',0,2]...]
 		
 		for i in self.D.keys():
 			self.all_crosses[i]=[]
@@ -63,7 +62,7 @@ class Backtracking:
 
 	def satisfiesConstraints(self,asignacion,palabra,lva):
 		# REVISADA / FUNCIONA (version del backtracking implementada con los dominios ya separados previamente)
-		# En teoria en este punto no puede haber palabras de longitud diferente a la adecuada
+		# En este punto no puede haber palabras de longitud diferente a la adecuada
 		all_crosses_word=self.all_crosses[palabra]
 		
 		for cross in all_crosses_word:
@@ -81,7 +80,7 @@ class Backtracking:
 		return True
 
 	def isCompleteSolution(self,solution):
-		# Mira si la longitud de la lista de soluciones es correcta(T / F)
+		# Mira si la longitud de la lista de soluciones es correcta( T / F)
 		if len(solution)!=self.num_words:
 			return False
 		return True
@@ -89,23 +88,9 @@ class Backtracking:
 	def domain(self,var,D):
 		#BACKTRACKING Y BACKTRACKING CON FC
 		return D[var]
-	
-	def chooseNewVar(self,D,lvna):
-		#ESTO SIRVE PARA EL MVC
-		i_min_length = 0 
-		i_min_distance = 999999
-		for indice,domain in enumerate(D):
-			if ((len(D[domain]) != 0) and (len(D[domain]) < i_min_distance) and (domain in lvna)):
-				i_min_length=domain
-				i_min_distance=len(D[domain])
-		return i_min_length
-	
-
-	
-
+    	
 	def updateDomains(self,asignableValue,DA):
-		# REVISADA / FUNCIONA
-		#Si queda algun dominio sin alguna variable no puede estar bien
+		#Si queda algun dominio sin alguna variable no hay solucion
 		ya_insertado=0
 		lista_auxiliar=[]
 		copia_lista=[]
@@ -123,7 +108,6 @@ class Backtracking:
 		return True
 
 	def __str__(self):
-		#REVISADA / FUNCIONA 
 		#Muestra los resultados obtenidos por el backtracking y el backtracking con forward checking
 
 		lva=dict(self.lva)
@@ -159,6 +143,7 @@ class Backtracking:
 		start_time = timeit.default_timer()
 		solution_backtracking_w_forward=self.resolveBacktrackingFC(lva,lvna,self.R,DA)
 		elapsed = timeit.default_timer() - start_time
+
 		if solution_backtracking_w_forward is not None:
 			print 'Solucion backtracking con forward checking: ' + '\n'
 			print solution_backtracking_w_forward
@@ -169,9 +154,13 @@ class Backtracking:
 		lva=dict(self.lva)
 		lvna=self.lvna[:]
 		DA=dict(self.D)
+		self.variable_aux_domains[:]=[]
+		lvna_sorted=self.sortbydomain()
+		print lvna_sorted
 		start_time = timeit.default_timer()
-		solution_backtracking_w_forward_mvc=self.resolveBacktrackingFC_MVC(lva,lvna,self.R,DA)
+		solution_backtracking_w_forward_mvc=self.resolveBacktrackingFC(lva,lvna_sorted,self.R,DA)
 		elapsed = timeit.default_timer() - start_time
+
 		if solution_backtracking_w_forward_mvc is not None:
 			print 'Solucion backtracking con forward checking y mvc: ' + '\n'
 			print solution_backtracking_w_forward_mvc
@@ -183,24 +172,25 @@ class Backtracking:
 
 
 	def rescueDomains(self,DA,l_to_act):
-		#REVISADA / FUNCIONA
-		#recupera los valores de los dominios 
+		#Recupera los valores de los dominios de la iteracion previa ( FC )
 		for diff_domain in l_to_act[1:]:
 			DA[diff_domain].append(l_to_act[0])
 
 	def satisfiesConstraintsTD(self,word,var,lva):
+		#Funcion intermedia para comprovar la longitud de las palabras del dominio (Backtracking normal), llama a satisfiesConstraints de mas arriba
 		if len(word)!=self.longitudes[self.orient_word_list.index(var)]:
 			return False
 		else:
 			return self.satisfiesConstraints(word,var,lva)
 
 	def list_except1(self,lvna,var):
-		print '----------------'
-		print var
-		print lvna
-		print [x for x in lvna if x != var]
-		print '----------------'
+		#Elimina un valor de una lista se usa para el mvc (eliminar un valor en concreto)
 		return [x for x in lvna if x != var]
+
+	def sortbydomain(self):
+		#Funcion que selecciona la variable con el dominio mas pequeno de las que aun no se han asignado
+		return [x[0] for x in sorted(self.D.items(), key = lambda item : len(item[1]))]
+
 
 
 	#DIFERENTES BACKTRACKINGS
@@ -208,15 +198,13 @@ class Backtracking:
 
 	def resolveBacktrackingTD(self, lva, lvna,R,D):
 		#Funcion que va a resolver el backtracking con los dominios juntos
-		#
-		#Output:
 
-		# We cant assign more values
+		# Si ya hemos asignado todas las variables retornamos
 		if not lvna:
 			return lva
-		# Get variable to assign and its D
+		# Cogemos la primera variable no asignada
 		var = lvna[0]
-		# Loop over the possibilities of the domain(that function returns a list)
+		# Miramos todos los diferentes valores que puede tomar el dominio
 		for word in self.big_dictionary_list:
 			if self.satisfiesConstraintsTD(word,var,lva):
 				lva[var]=word
@@ -227,14 +215,13 @@ class Backtracking:
 
 	def resolveBacktrackingSD(self, lva, lvna,R,D):
 		#Funcion que va a resolver el backtracking con los dominios separados
-		#Output:
 
-		# We cant assign more values
+		# Si ya hemos asignado todas las variables retornamos
 		if not lvna:
 			return lva
-		# Get variable to assign and its D
+		#Seleccionamos la primera variable no asignada
 		var = lvna[0]
-		# Loop over the possibilities of the domain(that function returns a list)
+		## Miramos todos los diferentes valores que puede tomar el dominio
 		for asignableValue in self.domain(var,D):
 			if self.satisfiesConstraints(self.big_dictionary_list[asignableValue],var,lva):
 				lva[var]=self.big_dictionary_list[asignableValue]
@@ -244,13 +231,11 @@ class Backtracking:
 		return ''
 
 	def resolveBacktrackingFC(self, lva, lvna, R, DA):
-		#print lvna
-		# REVISADA / FUNCIONA
-		#Resuelve el algoritmo de backtracking
-		# We cant assign more values
+		#Resuelve el algoritmo de backtracking con forward checking
+		# Si ya hemos asignado todas las variables retornamos
 		if not lvna:
 			return lva
-		# Get variable to assign and its D
+		# Cogemos la primera variable no asignada
 		var = lvna[0]
 		# Miramos todos los diferentes valores que puede tomar el dominio
 		for asignableValue in self.domain(var,DA):
@@ -258,34 +243,12 @@ class Backtracking:
 				if self.updateDomains(asignableValue,DA): #actualizamos dominios
 					lva[var]=self.big_dictionary_list[asignableValue]
 					res = self.resolveBacktrackingFC(lva,lvna[1:],R,DA)
-					#Condicion evaluada para acabar el backtracking
+					#Condicion evaluada para saber si hemos acabado el backtracking
 					if self.isCompleteSolution(res):
 						return res
 					self.rescueDomains(DA,self.variable_aux_domains[-1])
 					
 		return ''
 
-	def resolveBacktrackingFC_MVC(self, lva, lvna, R, DA):
-		#print lvna
-		# REVISADA / FUNCIONA
-		#Resuelve el algoritmo de backtracking
-		# We cant assign more values
-		if not lvna:
-			return lva
-		# Get variable to assign and its D
-		var = self.chooseNewVar(DA,lvna)
-		# Miramos todos los diferentes valores que puede tomar el dominio
-		for asignableValue in self.domain(var,DA):
-			if self.satisfiesConstraints(self.big_dictionary_list[asignableValue],var,lva): #satisface constantes
-				if self.updateDomains(asignableValue,DA): #actualizamos dominios
-					lva[var]=self.big_dictionary_list[asignableValue]
-					new_lvna=self.list_except1(lvna,var)
-					res = self.resolveBacktrackingFC_MVC(lva,new_lvna,R,DA)
-					#Condicion evaluada para acabar el backtracking
-					if self.isCompleteSolution(res):
-						return res
-					self.rescueDomains(DA,self.variable_aux_domains[-1])
-					
-		return ''
 
 	

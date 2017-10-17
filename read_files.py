@@ -31,7 +31,6 @@ class StructureCreator:
 		
 
 	def OcuppiedPositionsGenerator(self):
-		# REVISADA / FUNCIONA (MIRAR QUE NO LA LIE)
 		#IMPORTANTE:Llamar antes a la funcion que genere las orientaciones(wordOrientation) y a la funcion que detecta los diferentes tamanos de las palabras (lookWidths)
 		#Estructura que usa (1)->self.orient_words_list=['1H','1V',...] 
 		#Output(1)->genera una estructura self.occupied_positions=[[0,3,0,4,0,5],[...]]] self.occupied_positions[0] contiene todas las posiciones de la palabra 1
@@ -84,7 +83,6 @@ class StructureCreator:
 					self.cross.pop(self.cross.index(comb_2))
 
 	def generate_index_cross(self):
-		#REVISADA / FUNCIONA (MIRAR QUE NO HAGA COSAS RARAS)
 		#Genera los indices de cruce para simplificar el calculo posterior del backtracking
 		#Formato de each_cross [palabra_1,palabra_2,pos_x,pos_y]
 		#Output: [[palabra_1,palabra_2,index_pal_1,index_pal_2],[palabra_1,palabra_3,indice_pal_1,indice_pal_2]]
@@ -123,7 +121,6 @@ class StructureCreator:
 
 
 	def initialPosWords(self):
-		#REVISADA / FUNCIONA
 		# Miramos la cuadricula y buscamos numeros mayores que 0.
 		#Output:self.pos_init_words[]
 		for num_row,row in enumerate(self.squares):
@@ -136,7 +133,6 @@ class StructureCreator:
 
 
 	def wordOrientation(self):
-		#REVISADA / FUNCIONA
 		#En teoria estan por orden asi que no es necesario usar metodos como el insert ya que se revisan las cordenadas por orden.
 		#Output: self.orients_words_list es una lista que contiene una lista para cada uno de las aplabras indicando la orientacion en forma de una lista de chars H, V
 		
@@ -206,7 +202,6 @@ class StructureCreator:
 					self.orient_words_list.append(str(index)+'H')
 
 	def lookWidths(self):
-		#REVISADA / FUNCIONA
 		#Comprobamos las longitudes de las palabras horizontales
 		#Output:lista de longitudes self.longitudes[3,4,5,...] que corresponden 1 a 1 con las posiciones de self.orient_word_list=[1H,1V,...] 
 	
@@ -248,7 +243,6 @@ class StructureCreator:
 
 
 	def generatePairs(self):
-		#REVISADA / FUNCIONA
 		#Genera relaciones de palabras que comparten la misma longitud[[],[],[3,4]] donde la pos indica la longitud 
 		##Ouput:
 		print self.longitudes
@@ -265,7 +259,6 @@ class StructureCreator:
 
 
 	def __str__(self):
-		#REVISADA / FUNCIONA
 		#Funcion que sirve para comprobar el correcto funcionamiento del sistema generador de estructuras.
 		#Output: Muestra por pantalla todas las estructuras importantes genradas
 		print "---------ESTRUCTURAS GENERADAS PARA RESOLVER EL BACKTRACKING----------"

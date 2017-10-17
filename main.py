@@ -11,9 +11,8 @@ def main():
 	reader.generate_index_cross()
 	reader.generatePairs()
 	print reader
-	#self,R,lvna,file_dict,longitudes
-	solver=backtracking.Backtracking(reader.index_cross,reader.orient_words_list,"diccionari_CB.txt",reader.longitudes,reader.domain_pointers,reader.palabras_juntas)#Revisar intensamente esto
-	#print solver
+	solver=backtracking.Backtracking(reader.index_cross,"diccionari_CB.txt",reader.orient_words_list,reader.longitudes)#Revisar intensamente esto
+	print solver
 
 if __name__ == "__main__":
     main()
