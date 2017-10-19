@@ -3,8 +3,6 @@ Esta clase genera todas las lecturas de los ficheros y genera las estructuras qu
 '''
 class StructureCreator:
 	def __init__(self,file_crossword):
-		#REVISADA / FUNCIONA
-
 		#Leemos el crucigrama de fichero
 		self.crossword=open(file_crossword, 'r')
 		
@@ -82,7 +80,7 @@ class StructureCreator:
 				if comb_2[0] == p2 and comb_2[1] == p1:
 					self.cross.pop(self.cross.index(comb_2))
 
-	def generate_index_cross(self):
+	def generateIndexCross(self):
 		#Genera los indices de cruce para simplificar el calculo posterior del backtracking
 		#Formato de each_cross [palabra_1,palabra_2,pos_x,pos_y]
 		#Output: [[palabra_1,palabra_2,index_pal_1,index_pal_2],[palabra_1,palabra_3,indice_pal_1,indice_pal_2]]
@@ -245,7 +243,6 @@ class StructureCreator:
 	def generatePairs(self):
 		#Genera relaciones de palabras que comparten la misma longitud[[],[],[3,4]] donde la pos indica la longitud 
 		##Ouput:
-		print self.longitudes
 		self.domain_pointers=self.longitudes[:]
 		for longitud in range(self.maxima_longitud+1):
 			self.palabras_juntas.append([self.orient_words_list[i] for i, x in enumerate(self.longitudes) if x == longitud])
